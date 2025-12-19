@@ -17,15 +17,13 @@ st.sidebar.markdown("Intro to Machine Learning")
 
 st.set_page_config(
     page_title="Coffee Selling Recommendation",
+    page_icon="☕",
     layout="centered"
 )
 
-st.title("☕ Coffee Selling Recommendation App")
-
 st.markdown(
     """
-This app uses **unsupervised clustering** on historical coffee sales data  
-to recommend **when** and **at what price** a specific coffee should be sold.
+Let me recommend you about what type of coffee should be sold at what time of the day!
 """
 )
 
