@@ -27,16 +27,8 @@ Let me recommend you about what type of coffee should be sold at what time of th
 """
 )
 
-@st.cache_data
-def load_data():
-    return pd.read_csv("Coffe_sales.csv")
-
-@st.cache_resource
-def load_pipeline():
-    return joblib.load("coffee_clustering_pipeline.joblib")
-
-df = load_data()
-pipeline = load_pipeline()
+with open("coffee_clustering_pipeline.pkl", "rb") as f:
+    pipeline = pickle.load(f)
 
 features = [
     'hour_of_day',
