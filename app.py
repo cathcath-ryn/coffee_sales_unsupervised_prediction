@@ -59,20 +59,31 @@ coffee = st.selectbox(
     sorted(df['coffee_name'].unique())
 )
 
-# Input for clusters
-# Neutral reference values
-input_data = pd.DataFrame({
-    'hour_of_day': [10],                 # neutral time
-    'money': [df['money'].median()],     # typical price
-    'Weekdaysort': [3],                  # mid-week
-    'Monthsort': [6],                    # mid-year
-    'coffee_name': [coffee],
-    'Time_of_Day': ['Morning'],          # placeholder
-    'cash_type': ['card']
-})
+coffee_df = df[df['coffee_name'] == coffee]
 
-# Predicting cluster
-cluster = pipeline.predict(input_data)[0]
+# Safety check
+if coffee_df.empty:
+    st.warning("No historical data available for this coffee.")
+    st.stop()
+
+# Use the MODEL to assign clusters to REAL data
+coffee_df = coffee_df.copy()
+coffee_df['cluster'] = pipeline.predict(coffee_df[features])
+
+# Find the dominant cluster for this coffee
+dominant_cluster = coffee_df['cluster'].value_counts().idxmax()
+
+# Infer recommendations FROM MODEL CLUSTER
+recommended_time = (
+    coffee_df[coffee_df['cluster'] == dominant_cluster]['Time_of_Day']
+    .value_counts()
+    .idxmax()
+)
+
+recommended_price = (
+    coffee_df[coffee_df['cluster'] == dominant_cluster]['money']
+    .mean()
+)
 
 # Recommended time
 recommended_time = (
