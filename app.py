@@ -54,26 +54,22 @@ df['cluster'] = pipeline.predict(df[features])
 # input
 st.subheader("🔮 Choose Coffee Type")
 
+# User selects coffee from dropdown
 coffee = st.selectbox(
     "Select the coffee you want to sell:",
     sorted(df['coffee_name'].unique())
 )
 
-coffee_df = df[df['coffee_name'] == coffee]
+# Filter historical data for selected coffee
+coffee_df = df[df['coffee_name'] == coffee].copy()
 
-# Safety check
-if coffee_df.empty:
-    st.warning("No historical data available for this coffee.")
-    st.stop()
-
-# Use the MODEL to assign clusters to REAL data
-coffee_df = coffee_df.copy()
+# Assign clusters using the trained model
 coffee_df['cluster'] = pipeline.predict(coffee_df[features])
 
-# Find the dominant cluster for this coffee
+# Find dominant cluster for this coffee
 dominant_cluster = coffee_df['cluster'].value_counts().idxmax()
 
-# Infer recommendations FROM MODEL CLUSTER
+# Infer recommendations from dominant cluster
 recommended_time = (
     coffee_df[coffee_df['cluster'] == dominant_cluster]['Time_of_Day']
     .value_counts()
